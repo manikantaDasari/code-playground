@@ -1220,6 +1220,1347 @@ except ImportError:
             "Conditional imports for optional dependencies"
           ]
         }
+      },
+      {
+        id: "higher-order-functions",
+        title: "Higher Order Functions - Functions as First-Class Citizens",
+        description: "Learn functions that accept or return other functions",
+        difficulty: "intermediate",
+        icon: "fas fa-layer-group",
+        iconColor: "bg-purple-100",
+        examples: {
+          javascript: {
+            language: "javascript",
+            code: `// Higher Order Functions in JavaScript
+// Functions that accept or return other functions
+
+// Function that returns a function
+function createMultiplier(factor) {
+    return function(number) {
+        return number * factor;
+    };
+}
+
+const double = createMultiplier(2);
+const triple = createMultiplier(3);
+
+console.log("Double 5:", double(5));     // 10
+console.log("Triple 4:", triple(4));     // 12
+
+// Function that accepts a function as parameter
+function processArray(arr, callback) {
+    const result = [];
+    for (let item of arr) {
+        result.push(callback(item));
+    }
+    return result;
+}
+
+const numbers = [1, 2, 3, 4, 5];
+const squared = processArray(numbers, x => x * x);
+console.log("Squared:", squared);        // [1, 4, 9, 16, 25]
+
+// Built-in higher order functions
+const values = [1, 2, 3, 4, 5, 6];
+
+// map - transform each element
+const doubled = values.map(x => x * 2);
+console.log("Doubled:", doubled);        // [2, 4, 6, 8, 10, 12]
+
+// filter - select elements that match condition
+const evens = values.filter(x => x % 2 === 0);
+console.log("Evens:", evens);            // [2, 4, 6]
+
+// reduce - combine all elements into single value
+const sum = values.reduce((acc, curr) => acc + curr, 0);
+console.log("Sum:", sum);                // 21
+
+// find - get first element that matches
+const found = values.find(x => x > 3);
+console.log("First > 3:", found);        // 4
+
+// some/every - test conditions
+const hasEven = values.some(x => x % 2 === 0);
+const allPositive = values.every(x => x > 0);
+console.log("Has even:", hasEven);       // true
+console.log("All positive:", allPositive); // true
+
+// Function composition
+const addOne = x => x + 1;
+const square = x => x * x;
+
+const compose = (f, g) => x => f(g(x));
+const addOneAndSquare = compose(square, addOne);
+
+console.log("Compose result:", addOneAndSquare(3)); // 16
+
+// Currying
+function curry(func) {
+    return function(a) {
+        return function(b) {
+            return func(a, b);
+        };
+    };
+}
+
+const add = (a, b) => a + b;
+const curriedAdd = curry(add);
+const addFive = curriedAdd(5);
+
+console.log("Curried result:", addFive(3)); // 8
+
+// Practical example: Event handling
+function createEventHandler(eventType, callback) {
+    return function(element) {
+        element.addEventListener(eventType, callback);
+    };
+}
+
+const clickHandler = createEventHandler('click', () => {
+    console.log('Button clicked!');
+});
+
+// Usage: clickHandler(buttonElement);`,
+            comments: [
+              "Functions are first-class citizens",
+              "Can be passed as arguments and returned",
+              "Built-in methods like map, filter, reduce",
+              "Enables functional programming patterns"
+            ]
+          },
+          python: {
+            language: "python",
+            code: `# Higher Order Functions in Python
+# Functions that accept or return other functions
+
+# Function that returns a function
+def create_multiplier(factor):
+    def multiplier(number):
+        return number * factor
+    return multiplier
+
+double = create_multiplier(2)
+triple = create_multiplier(3)
+
+print("Double 5:", double(5))     # 10
+print("Triple 4:", triple(4))     # 12
+
+# Function that accepts a function as parameter
+def process_list(lst, callback):
+    result = []
+    for item in lst:
+        result.append(callback(item))
+    return result
+
+numbers = [1, 2, 3, 4, 5]
+squared = process_list(numbers, lambda x: x * x)
+print("Squared:", squared)        # [1, 4, 9, 16, 25]
+
+# Built-in higher order functions
+values = [1, 2, 3, 4, 5, 6]
+
+# map - transform each element
+doubled = list(map(lambda x: x * 2, values))
+print("Doubled:", doubled)        # [2, 4, 6, 8, 10, 12]
+
+# filter - select elements that match condition
+evens = list(filter(lambda x: x % 2 == 0, values))
+print("Evens:", evens)            # [2, 4, 6]
+
+# reduce - combine all elements into single value
+from functools import reduce
+sum_result = reduce(lambda acc, curr: acc + curr, values, 0)
+print("Sum:", sum_result)         # 21
+
+# List comprehensions (Pythonic alternative)
+doubled_comp = [x * 2 for x in values]
+evens_comp = [x for x in values if x % 2 == 0]
+print("Doubled (comp):", doubled_comp)
+print("Evens (comp):", evens_comp)
+
+# any/all - test conditions
+has_even = any(x % 2 == 0 for x in values)
+all_positive = all(x > 0 for x in values)
+print("Has even:", has_even)      # True
+print("All positive:", all_positive) # True
+
+# Function composition
+def add_one(x):
+    return x + 1
+
+def square(x):
+    return x * x
+
+def compose(f, g):
+    return lambda x: f(g(x))
+
+add_one_and_square = compose(square, add_one)
+print("Compose result:", add_one_and_square(3)) # 16
+
+# Decorator (special type of higher order function)
+def timer_decorator(func):
+    import time
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end - start:.4f} seconds")
+        return result
+    return wrapper
+
+@timer_decorator
+def slow_function():
+    import time
+    time.sleep(0.1)
+    return "Done"
+
+# Partial application
+from functools import partial
+
+def multiply(x, y):
+    return x * y
+
+double_func = partial(multiply, 2)
+print("Partial result:", double_func(5)) # 10
+
+# Using sorted with custom key function
+words = ["python", "java", "c", "javascript"]
+by_length = sorted(words, key=len)
+by_last_char = sorted(words, key=lambda word: word[-1])
+
+print("By length:", by_length)
+print("By last char:", by_last_char)`,
+            comments: [
+              "Functions are first-class objects",
+              "Decorators provide elegant higher-order patterns",
+              "functools module for advanced operations",
+              "List comprehensions often replace map/filter"
+            ]
+          }
+        },
+        comparison: {
+          javascript: [
+            "Built-in methods: <strong>map</strong>, <strong>filter</strong>, <strong>reduce</strong>",
+            "Arrow functions make callbacks concise",
+            "Function composition and currying patterns",
+            "Event handling uses higher-order functions"
+          ],
+          python: [
+            "Built-in functions: <strong>map</strong>, <strong>filter</strong>, <strong>reduce</strong>",
+            "<strong>Decorators</strong> provide powerful patterns",
+            "<strong>functools</strong> module for advanced operations",
+            "List comprehensions often preferred over map/filter"
+          ]
+        }
+      },
+      {
+        id: "closures",
+        title: "Closures - Lexical Scope and Data Privacy",
+        description: "Understand how inner functions access outer function variables",
+        difficulty: "intermediate",
+        icon: "fas fa-lock",
+        iconColor: "bg-rose-100",
+        examples: {
+          javascript: {
+            language: "javascript",
+            code: `// Closures in JavaScript
+// Inner functions have access to outer function variables
+
+// Basic closure example
+function outerFunction(x) {
+    // This is the outer function's scope
+    
+    function innerFunction(y) {
+        // Inner function has access to outer function's parameters
+        return x + y;
+    }
+    
+    return innerFunction;
+}
+
+const addFive = outerFunction(5);
+console.log("Closure result:", addFive(3)); // 8
+
+// Data privacy with closures
+function createCounter() {
+    let count = 0; // Private variable
+    
+    return {
+        increment: function() {
+            count++;
+            return count;
+        },
+        decrement: function() {
+            count--;
+            return count;
+        },
+        getCount: function() {
+            return count;
+        }
+    };
+}
+
+const counter = createCounter();
+console.log("Counter:", counter.increment()); // 1
+console.log("Counter:", counter.increment()); // 2
+console.log("Count:", counter.getCount());    // 2
+// console.log(counter.count); // undefined - private!
+
+// Module pattern using closures
+const calculatorModule = (function() {
+    let result = 0; // Private state
+    
+    return {
+        add: function(x) {
+            result += x;
+            return this;
+        },
+        multiply: function(x) {
+            result *= x;
+            return this;
+        },
+        getResult: function() {
+            return result;
+        },
+        reset: function() {
+            result = 0;
+            return this;
+        }
+    };
+})();
+
+calculatorModule.add(5).multiply(2);
+console.log("Module result:", calculatorModule.getResult()); // 10
+
+// Function factory using closures
+function createValidator(pattern) {
+    return function(input) {
+        return pattern.test(input);
+    };
+}
+
+const emailValidator = createValidator(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);
+const phoneValidator = createValidator(/^\\d{3}-\\d{3}-\\d{4}$/);
+
+console.log("Email valid:", emailValidator("test@example.com")); // true
+console.log("Phone valid:", phoneValidator("123-456-7890"));     // true
+
+// Closure in loops (common pitfall and solution)
+console.log("\\n=== Loop Closure Example ===");
+
+// Problem: var creates function scope
+for (var i = 0; i < 3; i++) {
+    setTimeout(function() {
+        console.log("var i:", i); // Prints 3, 3, 3
+    }, 100);
+}
+
+// Solution 1: let creates block scope
+for (let j = 0; j < 3; j++) {
+    setTimeout(function() {
+        console.log("let j:", j); // Prints 0, 1, 2
+    }, 200);
+}
+
+// Solution 2: IIFE (Immediately Invoked Function Expression)
+for (var k = 0; k < 3; k++) {
+    (function(index) {
+        setTimeout(function() {
+            console.log("IIFE k:", index); // Prints 0, 1, 2
+        }, 300);
+    })(k);
+}
+
+// Practical example: Event handlers with closures
+function setupButtons() {
+    const buttons = ['Button 1', 'Button 2', 'Button 3'];
+    const handlers = [];
+    
+    for (let i = 0; i < buttons.length; i++) {
+        handlers.push(function() {
+            console.log(\`\${buttons[i]} clicked!\`);
+        });
+    }
+    
+    return handlers;
+}
+
+const buttonHandlers = setupButtons();
+buttonHandlers[0](); // "Button 1 clicked!"
+buttonHandlers[1](); // "Button 2 clicked!"
+
+// Memory considerations
+function createHeavyClosure() {
+    const heavyData = new Array(1000000).fill('data');
+    
+    return function() {
+        // This closure keeps heavyData in memory
+        return heavyData.length;
+    };
+}
+
+// Be careful: closures can prevent garbage collection`,
+            comments: [
+              "Inner functions access outer scope variables",
+              "Creates private variables and methods",
+              "Enables module pattern and factories",
+              "Can cause memory leaks if not careful"
+            ]
+          },
+          python: {
+            language: "python",
+            code: `# Closures in Python
+# Inner functions have access to outer function variables
+
+# Basic closure example
+def outer_function(x):
+    # This is the outer function's scope
+    
+    def inner_function(y):
+        # Inner function has access to outer function's parameters
+        return x + y
+    
+    return inner_function
+
+add_five = outer_function(5)
+print("Closure result:", add_five(3))  # 8
+
+# Data privacy with closures
+def create_counter():
+    count = 0  # "Private" variable (by convention)
+    
+    def increment():
+        nonlocal count
+        count += 1
+        return count
+    
+    def decrement():
+        nonlocal count
+        count -= 1
+        return count
+    
+    def get_count():
+        return count
+    
+    return {
+        'increment': increment,
+        'decrement': decrement,
+        'get_count': get_count
+    }
+
+counter = create_counter()
+print("Counter:", counter['increment']())  # 1
+print("Counter:", counter['increment']())  # 2
+print("Count:", counter['get_count']())    # 2
+
+# Class-based approach (more Pythonic)
+class Counter:
+    def __init__(self):
+        self._count = 0  # Private by convention
+    
+    def increment(self):
+        self._count += 1
+        return self._count
+    
+    def decrement(self):
+        self._count -= 1
+        return self._count
+    
+    @property
+    def count(self):
+        return self._count
+
+counter_obj = Counter()
+print("Class counter:", counter_obj.increment())  # 1
+
+# Function factory using closures
+def create_validator(pattern):
+    import re
+    compiled_pattern = re.compile(pattern)
+    
+    def validator(input_str):
+        return bool(compiled_pattern.match(input_str))
+    
+    return validator
+
+email_validator = create_validator(r'^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$')
+phone_validator = create_validator(r'^\\d{3}-\\d{3}-\\d{4}$')
+
+print("Email valid:", email_validator("test@example.com"))  # True
+print("Phone valid:", phone_validator("123-456-7890"))     # True
+
+# Decorator using closures
+def memoize(func):
+    cache = {}
+    
+    def wrapper(*args):
+        if args in cache:
+            print(f"Cache hit for {args}")
+            return cache[args]
+        
+        result = func(*args)
+        cache[args] = result
+        print(f"Computed and cached {args}")
+        return result
+    
+    return wrapper
+
+@memoize
+def fibonacci(n):
+    if n < 2:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print("Fibonacci 10:", fibonacci(10))
+print("Fibonacci 10 again:", fibonacci(10))  # Uses cache
+
+# Late binding in loops (similar to JavaScript issue)
+functions = []
+for i in range(3):
+    # This captures the variable i, not its value
+    functions.append(lambda: i)
+
+print("\\n=== Loop Closure Example ===")
+for func in functions:
+    print("Late binding:", func())  # Prints 2, 2, 2
+
+# Solution: capture the value
+functions_fixed = []
+for i in range(3):
+    # Use default parameter to capture current value
+    functions_fixed.append(lambda x=i: x)
+
+for func in functions_fixed:
+    print("Fixed binding:", func())  # Prints 0, 1, 2
+
+# Practical example: Configuration factory
+def create_config_loader(base_path):
+    import json
+    import os
+    
+    def load_config(filename):
+        full_path = os.path.join(base_path, filename)
+        try:
+            with open(full_path, 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            return {"error": f"Config file {filename} not found"}
+    
+    return load_config
+
+# Usage
+config_loader = create_config_loader("/etc/myapp/")
+# app_config = config_loader("app.json")
+
+# Closure with state machine
+def create_state_machine(initial_state):
+    state = initial_state
+    
+    def transition(new_state):
+        nonlocal state
+        old_state = state
+        state = new_state
+        print(f"State changed: {old_state} -> {new_state}")
+        return state
+    
+    def get_state():
+        return state
+    
+    return transition, get_state
+
+change_state, current_state = create_state_machine("idle")
+print("Current:", current_state())  # idle
+change_state("running")            # State changed: idle -> running
+print("Current:", current_state())  # running`,
+            comments: [
+              "nonlocal keyword for modifying outer scope",
+              "Classes often preferred over closure patterns",
+              "Decorators are powerful closure applications",
+              "Late binding can cause similar issues to JavaScript"
+            ]
+          }
+        },
+        comparison: {
+          javascript: [
+            "Natural closure support with lexical scoping",
+            "IIFE pattern for immediate execution",
+            "Module pattern using closures",
+            "var vs let/const scoping differences"
+          ],
+          python: [
+            "<strong>nonlocal</strong> keyword for outer scope modification",
+            "Classes often preferred over closure patterns",
+            "Decorators provide elegant closure applications",
+            "Late binding issues similar to JavaScript"
+          ]
+        }
+      },
+      {
+        id: "asynchronous",
+        title: "Asynchronous Programming - Promises and Async/Await",
+        description: "Handle asynchronous operations and non-blocking code execution",
+        difficulty: "advanced",
+        icon: "fas fa-clock",
+        iconColor: "bg-blue-200",
+        examples: {
+          javascript: {
+            language: "javascript",
+            code: `// Asynchronous Programming in JavaScript
+// Promises, async/await, and handling asynchronous operations
+
+// Callback Hell Example (old way)
+console.log("=== Callback Example ===");
+function fetchUserData(userId, callback) {
+    setTimeout(() => {
+        callback(null, { id: userId, name: "Alice" });
+    }, 1000);
+}
+
+fetchUserData(1, (error, user) => {
+    if (error) {
+        console.error("Error:", error);
+    } else {
+        console.log("User data:", user);
+    }
+});
+
+// Promise-based approach
+console.log("\\n=== Promise Example ===");
+function fetchUserPromise(userId) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (userId > 0) {
+                resolve({ id: userId, name: "Bob" });
+            } else {
+                reject(new Error("Invalid user ID"));
+            }
+        }, 1000);
+    });
+}
+
+fetchUserPromise(2)
+    .then(user => {
+        console.log("Promise user:", user);
+        return fetchUserPromise(3); // Chain another promise
+    })
+    .then(anotherUser => {
+        console.log("Another user:", anotherUser);
+    })
+    .catch(error => {
+        console.error("Promise error:", error.message);
+    });
+
+// Async/Await (modern approach)
+console.log("\\n=== Async/Await Example ===");
+async function getUserData(userId) {
+    try {
+        const user = await fetchUserPromise(userId);
+        console.log("Async user:", user);
+        return user;
+    } catch (error) {
+        console.error("Async error:", error.message);
+        throw error;
+    }
+}
+
+// Calling async function
+getUserData(4);
+
+// Multiple async operations
+async function fetchMultipleUsers() {
+    try {
+        // Sequential execution
+        console.log("\\n=== Sequential Execution ===");
+        const user1 = await fetchUserPromise(5);
+        const user2 = await fetchUserPromise(6);
+        console.log("Sequential users:", [user1, user2]);
+        
+        // Parallel execution
+        console.log("\\n=== Parallel Execution ===");
+        const [user3, user4] = await Promise.all([
+            fetchUserPromise(7),
+            fetchUserPromise(8)
+        ]);
+        console.log("Parallel users:", [user3, user4]);
+        
+        // Promise.allSettled - wait for all, regardless of success/failure
+        const results = await Promise.allSettled([
+            fetchUserPromise(9),
+            fetchUserPromise(-1), // This will reject
+            fetchUserPromise(10)
+        ]);
+        
+        console.log("All settled results:");
+        results.forEach((result, index) => {
+            if (result.status === 'fulfilled') {
+                console.log(\`Result \${index}: SUCCESS -\`, result.value);
+            } else {
+                console.log(\`Result \${index}: FAILED -\`, result.reason.message);
+            }
+        });
+        
+    } catch (error) {
+        console.error("Multiple users error:", error.message);
+    }
+}
+
+fetchMultipleUsers();
+
+// Fetch API example (real-world async)
+async function fetchFromAPI() {
+    try {
+        console.log("\\n=== Fetch API Example ===");
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+        
+        if (!response.ok) {
+            throw new Error(\`HTTP error! status: \${response.status}\`);
+        }
+        
+        const data = await response.json();
+        console.log("API data:", data.title);
+        return data;
+    } catch (error) {
+        console.error("Fetch error:", error.message);
+    }
+}
+
+fetchFromAPI();
+
+// Promise creation and chaining
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function demonstrateDelay() {
+    console.log("\\n=== Delay Example ===");
+    console.log("Starting delay...");
+    await delay(2000);
+    console.log("Delay completed!");
+}
+
+demonstrateDelay();
+
+// Error handling in async functions
+async function errorHandlingExample() {
+    try {
+        await fetchUserPromise(-1); // This will reject
+    } catch (error) {
+        console.log("Caught error:", error.message);
+    } finally {
+        console.log("Cleanup code runs here");
+    }
+}
+
+errorHandlingExample();
+
+// Race condition example
+async function raceExample() {
+    console.log("\\n=== Race Example ===");
+    
+    const fast = delay(1000).then(() => "Fast result");
+    const slow = delay(3000).then(() => "Slow result");
+    
+    try {
+        const winner = await Promise.race([fast, slow]);
+        console.log("Race winner:", winner);
+    } catch (error) {
+        console.error("Race error:", error);
+    }
+}
+
+raceExample();`,
+            comments: [
+              "Promises solve callback hell problem",
+              "async/await provides synchronous-like syntax",
+              "Promise.all for parallel execution",
+              "Error handling with try/catch in async functions"
+            ]
+          },
+          python: {
+            language: "python",
+            code: `# Asynchronous Programming in Python
+# asyncio, async/await, and handling asynchronous operations
+
+import asyncio
+import aiohttp
+import time
+
+# Basic async function
+async def fetch_user_data(user_id):
+    """Simulate async database call"""
+    await asyncio.sleep(1)  # Simulate delay
+    if user_id > 0:
+        return {"id": user_id, "name": f"User_{user_id}"}
+    else:
+        raise ValueError("Invalid user ID")
+
+# Running async function
+async def basic_example():
+    print("=== Basic Async Example ===")
+    try:
+        user = await fetch_user_data(1)
+        print("Async user:", user)
+    except ValueError as e:
+        print("Error:", e)
+
+# Multiple async operations
+async def multiple_operations():
+    print("\\n=== Sequential vs Parallel ===")
+    
+    # Sequential execution
+    start_time = time.time()
+    user1 = await fetch_user_data(1)
+    user2 = await fetch_user_data(2)
+    sequential_time = time.time() - start_time
+    print(f"Sequential: {sequential_time:.2f}s - {[user1, user2]}")
+    
+    # Parallel execution with asyncio.gather
+    start_time = time.time()
+    user3, user4 = await asyncio.gather(
+        fetch_user_data(3),
+        fetch_user_data(4)
+    )
+    parallel_time = time.time() - start_time
+    print(f"Parallel: {parallel_time:.2f}s - {[user3, user4]}")
+
+# Error handling in async
+async def error_handling_example():
+    print("\\n=== Error Handling ===")
+    
+    tasks = [
+        fetch_user_data(5),
+        fetch_user_data(-1),  # This will raise an error
+        fetch_user_data(6)
+    ]
+    
+    # Using asyncio.gather with return_exceptions=True
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    
+    for i, result in enumerate(results):
+        if isinstance(result, Exception):
+            print(f"Task {i}: ERROR - {result}")
+        else:
+            print(f"Task {i}: SUCCESS - {result}")
+
+# HTTP requests with aiohttp
+async def fetch_from_api():
+    print("\\n=== HTTP Request Example ===")
+    
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get('https://jsonplaceholder.typicode.com/posts/1') as response:
+                if response.status == 200:
+                    data = await response.json()
+                    print("API data:", data['title'])
+                    return data
+                else:
+                    print(f"HTTP Error: {response.status}")
+        except aiohttp.ClientError as e:
+            print(f"Request error: {e}")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+
+# Async context manager
+class AsyncDatabaseConnection:
+    async def __aenter__(self):
+        print("Opening database connection...")
+        await asyncio.sleep(0.1)  # Simulate connection time
+        return self
+    
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        print("Closing database connection...")
+        await asyncio.sleep(0.1)  # Simulate cleanup time
+    
+    async def query(self, sql):
+        print(f"Executing: {sql}")
+        await asyncio.sleep(0.5)  # Simulate query time
+        return [{"id": 1, "name": "Alice"}]
+
+async def database_example():
+    print("\\n=== Async Context Manager ===")
+    
+    async with AsyncDatabaseConnection() as db:
+        results = await db.query("SELECT * FROM users")
+        print("Query results:", results)
+
+# Async generator
+async def async_number_generator(n):
+    for i in range(n):
+        await asyncio.sleep(0.1)  # Simulate async work
+        yield i
+
+async def generator_example():
+    print("\\n=== Async Generator ===")
+    
+    async for number in async_number_generator(5):
+        print(f"Generated: {number}")
+
+# Task creation and management
+async def task_management():
+    print("\\n=== Task Management ===")
+    
+    # Create tasks
+    task1 = asyncio.create_task(fetch_user_data(7))
+    task2 = asyncio.create_task(fetch_user_data(8))
+    
+    print("Tasks created, doing other work...")
+    await asyncio.sleep(0.5)
+    
+    # Wait for tasks to complete
+    user7 = await task1
+    user8 = await task2
+    
+    print("Task results:", [user7, user8])
+
+# Timeout handling
+async def timeout_example():
+    print("\\n=== Timeout Example ===")
+    
+    try:
+        # This will timeout after 0.5 seconds
+        result = await asyncio.wait_for(
+            fetch_user_data(9), 
+            timeout=0.5
+        )
+        print("Result:", result)
+    except asyncio.TimeoutError:
+        print("Operation timed out!")
+
+# Running all examples
+async def main():
+    await basic_example()
+    await multiple_operations()
+    await error_handling_example()
+    
+    # Note: aiohttp might not be available in all environments
+    try:
+        await fetch_from_api()
+    except ImportError:
+        print("aiohttp not available, skipping HTTP example")
+    
+    await database_example()
+    await generator_example()
+    await task_management()
+    await timeout_example()
+
+# Run the main function
+if __name__ == "__main__":
+    asyncio.run(main())
+
+# Synchronous wrapper for running async code
+def run_async_example():
+    """Helper function to run async code from sync context"""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        loop.run_until_complete(basic_example())
+    finally:
+        loop.close()
+
+print("\\n=== Running Async Examples ===")
+print("Use: asyncio.run(main()) to run all examples")`,
+            comments: [
+              "asyncio module for asynchronous programming",
+              "async/await syntax similar to JavaScript",
+              "asyncio.gather for concurrent execution",
+              "Async context managers with __aenter__/__aexit__"
+            ]
+          }
+        },
+        comparison: {
+          javascript: [
+            "Built-in <strong>Promise</strong> and <strong>async/await</strong>",
+            "<strong>Promise.all()</strong> for parallel execution",
+            "Fetch API for HTTP requests",
+            "Event loop handles asynchronous operations"
+          ],
+          python: [
+            "<strong>asyncio</strong> module for async programming",
+            "<strong>asyncio.gather()</strong> for concurrent execution",
+            "<strong>aiohttp</strong> for async HTTP requests",
+            "Explicit event loop management"
+          ]
+        }
+      },
+      {
+        id: "destructuring",
+        title: "Destructuring - Extracting Values from Data Structures",
+        description: "Learn to unpack arrays and objects into distinct variables",
+        difficulty: "intermediate",
+        icon: "fas fa-expand-arrows-alt",
+        iconColor: "bg-teal-100",
+        examples: {
+          javascript: {
+            language: "javascript",
+            code: `// Destructuring in JavaScript
+// Extract values from arrays and objects into variables
+
+// Array Destructuring
+console.log("=== Array Destructuring ===");
+const fruits = ["apple", "banana", "orange", "grape"];
+
+// Basic destructuring
+const [first, second] = fruits;
+console.log("First two:", first, second); // apple banana
+
+// Skipping elements
+const [, , third] = fruits;
+console.log("Third:", third); // orange
+
+// Rest operator
+const [head, ...tail] = fruits;
+console.log("Head:", head);     // apple
+console.log("Tail:", tail);     // ["banana", "orange", "grape"]
+
+// Default values
+const [a, b, c, d, e = "default"] = fruits;
+console.log("With default:", e); // default
+
+// Swapping variables
+let x = 1, y = 2;
+[x, y] = [y, x];
+console.log("Swapped:", x, y); // 2 1
+
+// Object Destructuring
+console.log("\\n=== Object Destructuring ===");
+const person = {
+    name: "Alice",
+    age: 25,
+    city: "New York",
+    hobbies: ["reading", "coding"]
+};
+
+// Basic destructuring
+const { name, age } = person;
+console.log("Name and age:", name, age);
+
+// Renaming variables
+const { name: fullName, city: location } = person;
+console.log("Renamed:", fullName, location);
+
+// Default values
+const { country = "USA", profession = "Developer" } = person;
+console.log("With defaults:", country, profession);
+
+// Nested destructuring
+const user = {
+    id: 1,
+    profile: {
+        name: "Bob",
+        contact: {
+            email: "bob@example.com",
+            phone: "123-456-7890"
+        }
+    }
+};
+
+const { 
+    profile: { 
+        name: userName, 
+        contact: { email } 
+    } 
+} = user;
+console.log("Nested:", userName, email);
+
+// Function Parameter Destructuring
+console.log("\\n=== Function Parameter Destructuring ===");
+
+// Array parameters
+function processCoordinates([x, y, z = 0]) {
+    console.log(\`Coordinates: x=\${x}, y=\${y}, z=\${z}\`);
+}
+
+processCoordinates([10, 20]);      // z defaults to 0
+processCoordinates([5, 15, 25]);   // z is 25
+
+// Object parameters
+function createUser({ name, email, age = 18 }) {
+    return {
+        id: Math.random(),
+        name,
+        email,
+        age,
+        createdAt: new Date()
+    };
+}
+
+const newUser = createUser({
+    name: "Charlie",
+    email: "charlie@example.com"
+});
+console.log("New user:", newUser);
+
+// Destructuring in loops
+console.log("\\n=== Destructuring in Loops ===");
+const users = [
+    { id: 1, name: "Alice", role: "admin" },
+    { id: 2, name: "Bob", role: "user" },
+    { id: 3, name: "Charlie", role: "moderator" }
+];
+
+for (const { name, role } of users) {
+    console.log(\`\${name} is a \${role}\`);
+}
+
+// Array of arrays
+const coordinates = [[1, 2], [3, 4], [5, 6]];
+for (const [x, y] of coordinates) {
+    console.log(\`Point: (\${x}, \${y})\`);
+}
+
+// Destructuring return values
+function getStats() {
+    return {
+        min: 1,
+        max: 100,
+        average: 50,
+        count: 10
+    };
+}
+
+const { min, max, average } = getStats();
+console.log("Stats:", { min, max, average });
+
+// Array from function
+function getRange() {
+    return [0, 100];
+}
+
+const [minVal, maxVal] = getRange();
+console.log("Range:", minVal, "to", maxVal);
+
+// Computed property names
+const key = "dynamicKey";
+const { [key]: dynamicValue = "defaultValue" } = { someOtherKey: "value" };
+console.log("Dynamic:", dynamicValue); // defaultValue
+
+// Mixed destructuring
+const data = {
+    title: "JavaScript Concepts",
+    tags: ["programming", "web", "frontend"],
+    meta: {
+        author: "Developer",
+        date: "2024"
+    }
+};
+
+const {
+    title,
+    tags: [primaryTag, ...otherTags],
+    meta: { author }
+} = data;
+
+console.log("Mixed destructuring:");
+console.log("Title:", title);
+console.log("Primary tag:", primaryTag);
+console.log("Other tags:", otherTags);
+console.log("Author:", author);`,
+            comments: [
+              "Works with arrays and objects",
+              "Supports default values and renaming",
+              "Rest operator for collecting remaining items",
+              "Great for function parameters and return values"
+            ]
+          },
+          python: {
+            language: "python",
+            code: `# Destructuring (Unpacking) in Python
+# Extract values from sequences and mappings
+
+# Tuple/List Unpacking
+print("=== Sequence Unpacking ===")
+fruits = ["apple", "banana", "orange", "grape"]
+
+# Basic unpacking
+first, second = fruits[:2]
+print("First two:", first, second)  # apple banana
+
+# Extended unpacking with *
+head, *tail = fruits
+print("Head:", head)      # apple
+print("Tail:", tail)      # ['banana', 'orange', 'grape']
+
+# Middle unpacking
+first, *middle, last = fruits
+print("First:", first)    # apple
+print("Middle:", middle)  # ['banana', 'orange']
+print("Last:", last)      # grape
+
+# Swapping variables
+x, y = 1, 2
+x, y = y, x
+print("Swapped:", x, y)   # 2 1
+
+# Multiple assignment
+a, b, c = 1, 2, 3
+print("Multiple:", a, b, c)
+
+# Unpacking with different types
+person_data = ("Alice", 25, "New York")
+name, age, city = person_data
+print("Person:", name, age, city)
+
+# Dictionary Unpacking (Python 3.5+)
+print("\\n=== Dictionary Unpacking ===")
+person = {
+    "name": "Alice",
+    "age": 25,
+    "city": "New York"
+}
+
+# Unpacking keys (order matters in Python 3.7+)
+name, age, city = person.values()
+print("Values:", name, age, city)
+
+# Dictionary unpacking in function calls
+def create_user(name, age, city):
+    return f"User: {name}, {age} years old, from {city}"
+
+user_info = create_user(**person)
+print("User info:", user_info)
+
+# Merging dictionaries
+defaults = {"theme": "light", "notifications": True}
+user_prefs = {"theme": "dark", "language": "en"}
+merged = {**defaults, **user_prefs}
+print("Merged:", merged)
+
+# Function Parameter Unpacking
+print("\\n=== Function Parameter Unpacking ===")
+
+def process_coordinates(x, y, z=0):
+    print(f"Coordinates: x={x}, y={y}, z={z}")
+
+coords = [10, 20]
+process_coordinates(*coords)  # Unpacks list
+
+coords_3d = [5, 15, 25]
+process_coordinates(*coords_3d)
+
+# Keyword argument unpacking
+def create_profile(**kwargs):
+    return {
+        "id": 123,
+        "created_at": "2024-01-01",
+        **kwargs
+    }
+
+profile_data = {
+    "name": "Bob",
+    "email": "bob@example.com",
+    "age": 30
+}
+profile = create_profile(**profile_data)
+print("Profile:", profile)
+
+# Unpacking in loops
+print("\\n=== Unpacking in Loops ===")
+users = [
+    ("Alice", "admin"),
+    ("Bob", "user"), 
+    ("Charlie", "moderator")
+]
+
+for name, role in users:
+    print(f"{name} is a {role}")
+
+# Enumerate with unpacking
+items = ["apple", "banana", "orange"]
+for index, item in enumerate(items):
+    print(f"{index}: {item}")
+
+# Dictionary items unpacking
+person_dict = {"name": "Alice", "age": 25, "city": "NYC"}
+for key, value in person_dict.items():
+    print(f"{key}: {value}")
+
+# Nested unpacking
+nested_data = [
+    ("user1", {"name": "Alice", "age": 25}),
+    ("user2", {"name": "Bob", "age": 30})
+]
+
+for user_id, user_data in nested_data:
+    name = user_data["name"]
+    age = user_data["age"]
+    print(f"{user_id}: {name} ({age})")
+
+# Named tuples (structured unpacking)
+from collections import namedtuple
+
+Point = namedtuple("Point", ["x", "y"])
+Color = namedtuple("Color", ["r", "g", "b"])
+
+point = Point(10, 20)
+color = Color(255, 128, 0)
+
+# Unpacking named tuples
+x, y = point
+r, g, b = color
+print("Point:", x, y)
+print("Color:", r, g, b)
+
+# Return multiple values
+def get_stats():
+    return 1, 100, 50.5, 10  # Returns tuple
+
+min_val, max_val, avg, count = get_stats()
+print("Stats:", min_val, max_val, avg, count)
+
+# Underscore for unused values
+def get_name_and_details():
+    return "Alice", 25, "Engineer", "New York"
+
+name, age, _, city = get_name_and_details()  # Ignore profession
+print("Selective:", name, age, city)
+
+# Zip unpacking
+names = ["Alice", "Bob", "Charlie"]
+ages = [25, 30, 35]
+cities = ["NYC", "LA", "Chicago"]
+
+for name, age, city in zip(names, ages, cities):
+    print(f"{name}, {age}, {city}")
+
+# Star expressions in assignments
+numbers = [1, 2, 3, 4, 5]
+first, *middle, last = numbers
+print("Star unpacking:", first, middle, last)
+
+# Practical example: parsing data
+def parse_config_line(line):
+    # Format: "key=value # comment"
+    parts = line.split('#')[0].strip().split('=')
+    if len(parts) == 2:
+        key, value = parts
+        return key.strip(), value.strip()
+    return None, None
+
+config_line = "database_url=localhost:5432 # Database connection"
+key, value = parse_config_line(config_line)
+print("Config:", key, "->", value)`,
+            comments: [
+              "Uses * for extended unpacking",
+              "** for dictionary unpacking in function calls",
+              "Works with any iterable sequence",
+              "Named tuples provide structured unpacking"
+            ]
+          }
+        },
+        comparison: {
+          javascript: [
+            "Works with <strong>arrays</strong> and <strong>objects</strong>",
+            "Rest operator <strong>...</strong> for remaining items",
+            "Default values and variable renaming",
+            "Nested destructuring support"
+          ],
+          python: [
+            "Works with any <strong>iterable</strong> sequence",
+            "<strong>*</strong> and <strong>**</strong> for unpacking",
+            "Named tuples for structured data",
+            "Dictionary unpacking with ** operator"
+          ]
+        }
       }
     ];
 
