@@ -10,9 +10,15 @@ import type { Concept } from "@shared/schema";
 export default function Home() {
   const [selectedConceptId, setSelectedConceptId] = useState<string>("variables");
 
-  const { data: concepts, isLoading } = useQuery<Concept[]>({
+  const { data: concepts, isLoading, error } = useQuery<Concept[]>({
     queryKey: ["/api/concepts"],
   });
+
+  // Debug logging
+  console.log("Concepts data:", concepts);
+  console.log("Selected concept ID:", selectedConceptId);
+  console.log("Is loading:", isLoading);
+  console.log("Error:", error);
 
   const { data: selectedConcept } = useQuery<Concept>({
     queryKey: ["/api/concepts", selectedConceptId],
@@ -79,7 +85,10 @@ export default function Home() {
             {concepts?.map((concept) => (
               <button
                 key={concept.id}
-                onClick={() => setSelectedConceptId(concept.id)}
+                onClick={() => {
+                  console.log("Button clicked for concept:", concept.id);
+                  setSelectedConceptId(concept.id);
+                }}
                 className={`concept-btn bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border-2 active:scale-95 group ${
                   selectedConceptId === concept.id 
                     ? 'border-blue-500 bg-blue-50' 
