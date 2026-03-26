@@ -56,6 +56,52 @@ A comprehensive educational web application for comparing JavaScript and Python 
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
 
+## Deploying To Vercel
+
+This project can be deployed to Vercel as:
+- A static Vite frontend from `dist/public`
+- Serverless API functions from the `/api` directory
+
+### One-time setup
+
+1. Push the project to GitHub.
+2. Make sure these files are included:
+   - `vercel.json`
+   - `api/concepts/index.ts`
+   - `api/concepts/[id].ts`
+
+### Deploy from the Vercel dashboard
+
+1. Log in to Vercel.
+2. Click `Add New...` -> `Project`.
+3. Import your GitHub repository.
+4. Keep the detected project root as the repository root.
+5. Vercel will use:
+   - Build Command: `npm run build`
+   - Output Directory: `dist/public`
+6. Click `Deploy`.
+
+### Deploy from the CLI
+
+```bash
+npm i -g vercel
+vercel
+vercel --prod
+```
+
+### Verify deployment
+
+After deployment, open:
+
+- `/` to verify the frontend loads
+- `/api/concepts` to verify the API responds
+
+### Notes
+
+- No database is required for the current version of this app.
+- Data is served from in-memory storage in `server/storage.ts`.
+- Local development still uses `npm run dev`.
+
 ## Concepts Covered
 
 ### Beginner Level
