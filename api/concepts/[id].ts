@@ -1,24 +1,45 @@
 import { storage } from "../../server/storage";
 
-type RouteContext = {
-  params: {
-    id: string;
+type VercelRequest = {
+  method?: string;
+  query?: {
+    id?: string | string[];
   };
 };
 
-export async function GET(_request: Request, context: RouteContext) {
+type VercelResponse = {
+  status: (code: number) => VercelResponse;
+  json: (body: unknown) => void;
+  setHeader: (name: string, value: string | string[]) => void;
+};
+
+export default async function handler(
+  req: VercelRequest,
+  res: VercelResponse,
+) {
+  if (req.method !== "GET") {
+    res.setHeader("Allow", "GET");
+    res.status(405).json({ message: "Method not allowed" });
+    return;
+  }
+
+  const id = Array.isArray(req.query?.id) ? req.query.id[0] : req.query?.id;
+
+  if (!id) {
+    res.status(400).json({ message: "Concept id is required" });
+    return;
+  }
+
   try {
-    const concept = await storage.getConcept(context.params.id);
+    const concept = await storage.getConcept(id);
 
     if (!concept) {
-      return Response.json({ message: "Concept not found" }, { status: 404 });
+      res.status(404).json({ message: "Concept not found" });
+      return;
     }
 
-    return Response.json(concept);
+    res.status(200).json(concept);
   } catch {
-    return Response.json(
-      { message: "Failed to fetch concept" },
-      { status: 500 },
-    );
+    res.status(500).json({ message: "Failed to fetch concept" });
   }
 }
