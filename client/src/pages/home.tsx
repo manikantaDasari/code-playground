@@ -1,40 +1,16 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/ui/code-block";
 import { Book, Code } from "lucide-react";
 import type { Concept } from "@shared/schema";
+import { conceptsData } from "@shared/concepts";
 
 export default function Home() {
   const [selectedConceptId, setSelectedConceptId] = useState<string>("variables");
-
-  const { data: concepts, isLoading, error } = useQuery<Concept[]>({
-    queryKey: ["/api/concepts"],
-  });
-
-  // Debug logging
-  console.log("Concepts data:", concepts);
-  console.log("Selected concept ID:", selectedConceptId);
-  console.log("Is loading:", isLoading);
-  console.log("Error:", error);
-
-  const { data: selectedConcept } = useQuery<Concept>({
-    queryKey: ["/api/concepts", selectedConceptId],
-    enabled: !!selectedConceptId,
-  });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading concepts...</p>
-        </div>
-      </div>
-    );
-  }
+  const concepts: Concept[] = conceptsData;
+  const selectedConcept =
+    concepts.find((concept) => concept.id === selectedConceptId) ?? concepts[0];
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {

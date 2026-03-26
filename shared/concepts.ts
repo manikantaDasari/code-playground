@@ -15,7 +15,28 @@ export class MemStorage implements IStorage {
   }
 
   private initializeData() {
-    const defaultConcepts: Concept[] = [
+    conceptsData.forEach((concept) => {
+      this.concepts.set(concept.id, concept);
+    });
+  }
+
+  async getConcepts(): Promise<Concept[]> {
+    return Array.from(this.concepts.values());
+  }
+
+  async getConcept(id: string): Promise<Concept | undefined> {
+    return this.concepts.get(id);
+  }
+
+  async createConcept(concept: InsertConcept): Promise<Concept> {
+    const id = `concept_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const newConcept: Concept = { ...concept, id };
+    this.concepts.set(id, newConcept);
+    return newConcept;
+  }
+}
+
+export const conceptsData: Concept[] = [
       {
         id: "variables",
         title: "Variables - Declaration and Assignment",
@@ -2562,27 +2583,6 @@ print("Config:", key, "->", value)`,
           ]
         }
       }
-    ];
-
-    defaultConcepts.forEach(concept => {
-      this.concepts.set(concept.id, concept);
-    });
-  }
-
-  async getConcepts(): Promise<Concept[]> {
-    return Array.from(this.concepts.values());
-  }
-
-  async getConcept(id: string): Promise<Concept | undefined> {
-    return this.concepts.get(id);
-  }
-
-  async createConcept(concept: InsertConcept): Promise<Concept> {
-    const id = `concept_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const newConcept: Concept = { ...concept, id };
-    this.concepts.set(id, newConcept);
-    return newConcept;
-  }
-}
+];
 
 export const storage = new MemStorage();
