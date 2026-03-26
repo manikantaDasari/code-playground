@@ -1,4 +1,4 @@
-import { storage } from "../../server/storage";
+import { storage } from "../../shared/concepts";
 
 type VercelRequest = {
   method?: string;
